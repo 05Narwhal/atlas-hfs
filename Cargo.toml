@@ -1,12 +1,12 @@
 [package]
 name = "atlas-hfs"
-version = "26.0.1-a"
+version = "26.0.2-a"
 edition = "2024"
 rust-version = "1.88"
 license = "MIT OR Apache-2.0"
 description = "Read classic HFS (Mac OS Standard) volumes: master directory block, catalog and extents B-trees, forks, Mac text encodings."
 repository = "https://github.com/05Narwhal/atlas-hfs"
-homepage = "https://julianloy.com"
+documentation = "https://disk-atlas.julianloy.com/docs"
 readme = "README.md"
 keywords = ["hfs", "filesystem", "macos", "classic", "parser"]
 categories = ["filesystem", "parser-implementations"]
@@ -17,13 +17,13 @@ authors = ["Julian A. Loy"]
 test-util = ["atlas-hfsplus/test-util"]
 
 [dependencies]
-atlas-fs-core = { version = "26.0.1-a", path = "../atlas-fs-core" }
+atlas-fs-core = { version = "26.0.2-a", path = "../atlas-fs-core" }
 # The shared B-tree, fork map and catalog helpers.
-atlas-hfsplus = { version = "26.0.1-a", path = "../atlas-hfsplus" }
+atlas-hfsplus = { version = "26.0.2-a", path = "../atlas-hfsplus" }
 
 [dev-dependencies]
 # The B-tree node fixtures the tests build on.
-atlas-hfsplus = { version = "26.0.1-a", path = "../atlas-hfsplus", features = ["test-util"] }
+atlas-hfsplus = { version = "26.0.2-a", path = "../atlas-hfsplus", features = ["test-util"] }
 
 [lints.rust]
 unsafe_code = "forbid"
