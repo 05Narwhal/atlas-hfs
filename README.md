@@ -2,31 +2,60 @@
 
 [![crates.io](https://img.shields.io/crates/v/atlas-hfs.svg)](https://crates.io/crates/atlas-hfs) [![docs.rs](https://img.shields.io/docsrs/atlas-hfs)](https://docs.rs/atlas-hfs) [![CI](https://github.com/05Narwhal/atlas-hfs/actions/workflows/ci.yml/badge.svg)](https://github.com/05Narwhal/atlas-hfs/actions/workflows/ci.yml) ![License](https://img.shields.io/crates/l/atlas-hfs.svg)
 
-A read-only classic HFS (Mac OS Standard) reader. It implements `atlas_fs_core::fs::FileSystem`, so a mounted
-volume lists folders, looks up names, reads data and resource forks and scans the whole catalog through the same
-trait as the other `atlas-*` readers.
+**A read-only reader for classic HFS, the Mac OS Standard volume format.**
 
-- Master directory block (and its alternate copy), catalog and extents overflow B-trees, data and resource forks.
-- Names decoded from the volume's Mac text encoding (Roman by default, `mount_with` picks another).
-- Finder type and creator codes, flags and dates.
-- No `unsafe`. Every length, offset and count read from the disk is checked; damage is an error, not a panic.
+Classic HFS is the format of System 7, Mac OS 8 and 9 floppies, hard disks and old disk images. `atlas-hfs` mounts such a volume from any `BlockSource` and implements `atlas_fs_core::fs::FileSystem`, with both forks of every file.
 
-It builds on `atlas-hfsplus` for the B-tree reader and fork mapping.
+## Features
+
+- **Master directory block** (with its alternate copy), catalog and extents-overflow B-trees.
+- **Data and resource forks.**
+- Names decoded from the volume's **Mac text encoding**: Roman by default, and `mount_with` picks another.
+- **Finder type and creator codes**, flags and dates.
+- A whole-catalog scan through the shared trait.
+
+## Quick start
 
 ```rust,no_run
+use std::path::Path;
 use std::sync::Arc;
-use atlas_fs_core::fs::FileSystem;
-use atlas_fs_core::io::block::BlockSource;
+
+use atlas_fs_core::fs::{DirBatch, DirProgress, FileSystem};
 use atlas_fs_core::io::file::FileSource;
 
-let source: Arc<dyn BlockSource> = Arc::new(FileSource::open("classic.img".as_ref())?);
+let source = Arc::new(FileSource::open(Path::new("classic.img"))?);
 let volume = atlas_hfs::mount(source)?;
-let mut dir = volume.read_dir(volume.root())?;
-# Ok::<(), atlas_fs_core::error::Error>(())
+println!("{}", volume.info().name);
+
+let mut stream = volume.read_dir(volume.root())?;
+let mut batch = DirBatch::new();
+while stream.next_batch(&mut batch, 256)? == DirProgress::More {}
+for entry in batch.iter() {
+    println!("{}", entry.name);
+}
 ```
 
-The `test-util` feature exposes the test volume builder; it is for tests of crates that use this one and is not
-part of the stable API.
+To choose a text encoding other than Mac Roman, call `mount_with(source, encoding)`.
+
+## How it works
+
+The catalog and extents files are B-trees read through the shared `atlas_hfsplus::btree` reader, and forks map through `atlas_hfsplus::extents::ForkMap`. `mount` cuts the allocation-block area out of the source (block `n` is at byte `n * block_size`, the same geometry as HFS+) and opens the two trees in it.
+
+Classic HFS cannot descend its catalog to a named key, so a file with no thread record is found by id only through the listing of its folder. Every listing and lookup records the pair, and `metadata` falls back on it.
+
+Builds on `atlas-hfsplus` for the B-tree reader and fork mapping.
+
+## Safety and robustness
+
+- **No `unsafe`.** The crate is `#![forbid(unsafe_code)]`.
+- **On-disk bytes are hostile.** Every length, offset and count read from a disk is validated before use. Damage is returned as an error, never a panic, an unchecked index or an unbounded loop.
+- **Lints enforce it.** Clippy's `indexing_slicing`, `arithmetic_side_effects`, `unwrap_used`, `expect_used` and `panic` lints are on for the library code.
+- **Read-only.** Nothing in this crate writes to a disk or image.
+- **Fuzzed.** A `cargo-fuzz` target in `fuzz/` runs the parser on arbitrary bytes.
+
+## Feature flags
+
+- `test-util`: exposes the synthetic test image builders and fuzz seed inputs this crate's own tests use, for tests of crates built on it. It is not part of the stable API.
 
 ## Install
 
@@ -35,7 +64,9 @@ part of the stable API.
 atlas-hfs = "26.0.1-a"
 ```
 
-Minimum supported Rust version: 1.88.
+Versions follow `26.MAJOR.MINOR-STAGE`: the year, the major and minor version, and a stage letter (`a` alpha, `b` beta, `s` stable). Cargo treats a stage suffix as a pre-release, so name the version exactly as above.
+
+Minimum supported Rust version: 1.88 (edition 2024).
 
 ## Licence
 
