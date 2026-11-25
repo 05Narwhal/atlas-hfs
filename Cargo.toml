@@ -6,6 +6,7 @@ rust-version = "1.88"
 license = "MIT OR Apache-2.0"
 description = "Read classic HFS (Mac OS Standard) volumes: master directory block, catalog and extents B-trees, forks, Mac text encodings."
 repository = "https://github.com/05Narwhal/atlas-hfs"
+homepage = "https://julianloy.com"
 readme = "README.md"
 keywords = ["hfs", "filesystem", "macos", "classic", "parser"]
 categories = ["filesystem", "parser-implementations"]
