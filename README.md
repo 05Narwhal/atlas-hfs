@@ -1,6 +1,6 @@
 # atlas-hfs
 
-<!-- badges -->[![crates.io](https://img.shields.io/crates/v/atlas-hfs.svg)](https://crates.io/crates/atlas-hfs) [![docs.rs](https://img.shields.io/docsrs/atlas-hfs)](https://docs.rs/atlas-hfs) [![CI](https://github.com/05Narwhal/atlas-hfs/actions/workflows/ci.yml/badge.svg)](https://github.com/05Narwhal/atlas-hfs/actions/workflows/ci.yml) ![License](https://img.shields.io/crates/l/atlas-hfs.svg)
+[![crates.io](https://img.shields.io/crates/v/atlas-hfs.svg)](https://crates.io/crates/atlas-hfs) [![docs.rs](https://img.shields.io/docsrs/atlas-hfs)](https://docs.rs/atlas-hfs) [![CI](https://github.com/05Narwhal/atlas-hfs/actions/workflows/ci.yml/badge.svg)](https://github.com/05Narwhal/atlas-hfs/actions/workflows/ci.yml) ![License](https://img.shields.io/crates/l/atlas-hfs.svg)
 
 A read-only classic HFS (Mac OS Standard) reader. It implements `atlas_fs_core::fs::FileSystem`, so a mounted
 volume lists folders, looks up names, reads data and resource forks and scans the whole catalog through the same
