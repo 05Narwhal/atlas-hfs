@@ -32,7 +32,7 @@ part of the stable API.
 
 ```toml
 [dependencies]
-atlas-hfs = "0.1"
+atlas-hfs = "26.0.1-a"
 ```
 
 Minimum supported Rust version: 1.88.

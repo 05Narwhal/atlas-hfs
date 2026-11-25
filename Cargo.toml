@@ -1,6 +1,6 @@
 [package]
 name = "atlas-hfs"
-version = "0.1.0"
+version = "26.0.1-a"
 edition = "2024"
 rust-version = "1.88"
 license = "MIT OR Apache-2.0"
@@ -17,13 +17,13 @@ authors = ["Julian A. Loy"]
 test-util = ["atlas-hfsplus/test-util"]
 
 [dependencies]
-atlas-fs-core = { version = "0.1", path = "../atlas-fs-core" }
+atlas-fs-core = { version = "26.0.1-a", path = "../atlas-fs-core" }
 # The shared B-tree, fork map and catalog helpers.
-atlas-hfsplus = { version = "0.1", path = "../atlas-hfsplus" }
+atlas-hfsplus = { version = "26.0.1-a", path = "../atlas-hfsplus" }
 
 [dev-dependencies]
 # The B-tree node fixtures the tests build on.
-atlas-hfsplus = { version = "0.1", path = "../atlas-hfsplus", features = ["test-util"] }
+atlas-hfsplus = { version = "26.0.1-a", path = "../atlas-hfsplus", features = ["test-util"] }
 
 [lints.rust]
 unsafe_code = "forbid"
